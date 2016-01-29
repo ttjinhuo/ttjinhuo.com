@@ -12,7 +12,7 @@ else
 
     #cp ${PROJECT}/conf/nginx.conf.tpl ${PROJECT}/conf/nginx.conf
     sed "s:{PROJECT}:${PROJECT}:g" ${PROJECT}/conf/nginx.conf.tpl > ${PROJECT}/conf/nginx.conf
-
+    chmod -R 755 ${PROJECT}/www
     # 启动配置文件
     ./bin/nginx -c ${PROJECT}/conf/nginx.conf
 fi

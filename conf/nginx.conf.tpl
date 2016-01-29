@@ -1,21 +1,23 @@
 user  www www;
-worker_processes  2;
+worker_processes  2; #推荐worker数为cpu核数，避免cpu不必要的上下文切换
 
 error_log  {PROJECT}/logs/error.log;
 
 pid        {PROJECT}/logs/nginx.pid;
 
 events {
+    #表示每个worker进程所能建立连接的最大值
+    #一个nginx最大的连接数max=worker_connections*worker_processes;
+    #对于http请求本地资源最大并发数量为max
+    #如果http作为反向代理，最大并发数为max/2。因为每个并发会建立与客户端的连接和与后端服务的连接，会占用两个连接
     worker_connections  2048;
 }
 
 http {
     include       mime.types;
     default_type  application/octet-stream;
-
-
     sendfile        on;
-
+    server_tokens  off; #是否在错误页面和服务器头中输出nginx版本信息
     keepalive_timeout  65;
 
     # gzip压缩功能设置
@@ -44,7 +46,7 @@ http {
         location  ~* /download/ {  
             root {PROJECT}/www/download;  
         }
-        location ~ .*\.(gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ {   
+        location ~ .*\.(gif|jpg|jpeg|bmp|png|ico|txt|js|css|ttf|otf|woff|svg|mp3|wma|wav|flac|aac|m4a|ogg|avi|mp4|wmv|mkv|mpeg|flv|swf)$ {   
             root {PROJECT}/www;   
             expires 7d; 
         }
